@@ -18,14 +18,25 @@ float calculateVin(uint16_t vADC) {
   return RATIO_ADC * (float)vADC * RATIO_VOLT;
 }
 
+byte Ohm[8] = {
+  B01110,
+  B10001,
+  B10001,
+  B10001,
+  B01010,
+  B01010,  
+  B11011,
+};
+
 void setup() {
-  
+  lcd.createChar(0, Ohm);
   // put your setup code here, to run once:
   Serial.begin(9600);
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
-  lcd.setCursor(0, 0);
-  lcd.print("ORSYS");
+  lcd.setCursor(5, 0);
+  lcd.write(byte(0));
+  lcd.print("RSYS");
   lcd.setCursor(0, 1);
   lcd.print("Voltmetre");
   delay(2000);
