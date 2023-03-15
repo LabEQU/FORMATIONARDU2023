@@ -4,11 +4,21 @@
 #define PIN_BUTTON 2
 
 #define PIN_POT A5
+/**
+*temps minimum d'allumage du feux piéton
+*/
+#define TEMPS_MIN 2000
+/**
+*temps maximum d'allumage du feux piéton
+*/
+#define TEMPS_MAX 10000
+
 
 /**
 * get ration of DAC
 * @param adcValue
 * @param vRef
+* @return ADCRatio
 */
 float getADCRatio(uint16_t adcValue, float vRef = 5) {
   return (vRef / 1024.0F) * (float)adcValue;
@@ -31,11 +41,12 @@ void loop() {
   if (buttonState > 0) {
     Serial.println("button activated");
     int potValue = analogRead(PIN_POT);
-    Serial.print("pot value : ");
-    Serial.println(potValue);
-    float voltageValue = getADCRatio(potValue);
-    Serial.print("voltage value : ");
-    Serial.println(voltageValue);
+    long timeToWaitOnRed=map(potValue, 0, 1023, TEMPS_MIN, TEMPS_MAX);
+    Serial.print("Time on red (ms) : ");
+    Serial.println(timeToWaitOnRed);
+    // float voltageValue = getADCRatio(potValue);
+    // Serial.print("voltage value : ");
+    // Serial.println(voltageValue);
     digitalWrite(PIN_GREEN, HIGH);
     delay(500);
     digitalWrite(PIN_GREEN, LOW);
@@ -43,7 +54,7 @@ void loop() {
     delay(500);
     digitalWrite(PIN_YELLOW, LOW);
     digitalWrite(PIN_RED, HIGH);
-    delay(1000);
+    delay(timeToWaitOnRed);
     digitalWrite(PIN_RED, LOW);
   } else {
     Serial.println("not activated");
