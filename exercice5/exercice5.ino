@@ -1,10 +1,7 @@
-// include the library code:
-#include <LiquidCrystal.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 
-// initialize the library by associating any needed LCD interface pin
-// with the arduino pin number it is connected to
-const int rs = 12, en = 11, d4 = 7, d5 = 6, d6 = 5, d7 = 4;
-LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 #define R1 2000
 #define R2 560
@@ -24,16 +21,15 @@ byte Ohm[8] = {
   B10001,
   B10001,
   B01010,
-  B01010,  
+  B01010,
   B11011,
 };
 
 void setup() {
-  lcd.createChar(0, Ohm);
-  // put your setup code here, to run once:
   Serial.begin(9600);
-  // set up the LCD's number of columns and rows:
-  lcd.begin(16, 2);
+  lcd.init();
+  lcd.backlight();
+  lcd.createChar(0, Ohm);
   lcd.setCursor(5, 0);
   lcd.write(byte(0));
   lcd.print("RSYS");
