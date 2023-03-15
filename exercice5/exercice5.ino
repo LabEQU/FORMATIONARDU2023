@@ -51,5 +51,6 @@ void loop() {
 
   lcd.setCursor(0, 1);
   lcd.print(calculateVin(analogRead(PIN_Volt)));
+  lcd.print(" V");
   delay(900);
 }
