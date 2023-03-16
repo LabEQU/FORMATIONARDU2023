@@ -9,6 +9,19 @@
 // For 1.44" and 1.8" TFT with ST7735 use:
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 
+#define R1 2000
+#define R2 560
+#define PIN_Volt A0
+
+#define MAX_VOLTS_INPUT 22.857F
+#define RATIO_VOLT (float)(MAX_VOLTS_INPUT / 5.0F)
+#define RATIO_ADC (float)(5.0F / 1024.0F)
+
+float calculateVin(uint16_t vADC) {
+  float r = 5.0F / 1024.0F * (float)vADC * RATIO_VOLT;
+  return r;
+}
+
 void setupScreen() {
   tft.setCursor(20, 30);
   tft.setTextSize(3);
@@ -38,9 +51,14 @@ void displayScreen() {
   tft.setTextSize(2);
   tft.setTextColor(ST77XX_RED);
   tft.print("en A0");
+  tft.setCursor(30, 125);
+  tft.setTextSize(2);
+  tft.setTextColor(ST77XX_RED);
+  tft.print("Volts");
 }
 
 void setup() {
+  Serial.begin(9600);
   tft.initR(INITR_BLACKTAB);
   tft.fillScreen(ST77XX_BLACK);
   setupScreen();
@@ -48,4 +66,10 @@ void setup() {
   displayScreen();
 }
 void loop() {
+  tft.fillRect(20, 80, 88, 40, ST77XX_CYAN);
+  tft.setCursor(27, 90);
+  tft.setTextSize(3);
+  tft.setTextColor(ST77XX_BLACK);
+  tft.print(calculateVin(analogRead(PIN_Volt)));
+  delay(900);
 }
