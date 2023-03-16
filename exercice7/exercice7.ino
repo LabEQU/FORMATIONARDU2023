@@ -1,6 +1,8 @@
 #include <Adafruit_GFX.h>     // Core graphics library
 #include <Adafruit_ST7735.h>  // Hardware-specific library for ST7735
 #include <SPI.h>
+#include "tft_positions.h"
+
 // These pins will also work for the 1.8" TFT shield.
 #define TFT_CS 10
 #define TFT_RST 8  // Or set to -1 and connect to Arduino RESET pin
@@ -41,35 +43,17 @@ void setupScreen() {
   tft.print("copyright 2023");
 }
 
-void displayScreen() {
-  tft.fillScreen(ST77XX_BLACK);
-  tft.setCursor(20, 30);
-  tft.setTextSize(2);
-  tft.setTextColor(ST77XX_RED);
-  tft.print("TENSION");
-  tft.setCursor(30, 50);
-  tft.setTextSize(2);
-  tft.setTextColor(ST77XX_RED);
-  tft.print("en A0");
-  tft.setCursor(30, 125);
-  tft.setTextSize(2);
-  tft.setTextColor(ST77XX_RED);
-  tft.print("Volts");
-}
-
 void setup() {
-  Serial.begin(9600);
   tft.initR(INITR_BLACKTAB);
   tft.fillScreen(ST77XX_BLACK);
   setupScreen();
   delay(1000);
-  displayScreen();
+  tft.fillScreen(TFT_BACK_COLOR);
+  makeCadre(CADRE_A0_X,CADRE_A0_Y,CADRE_GENERIC_W,CADRE_GENERIC_H,"V en A0");
+  makeCadre(CADRE_A1_X,CADRE_A1_Y,CADRE_GENERIC_W,CADRE_GENERIC_H,"V en A0");
 }
 void loop() {
-  tft.fillRect(20, 80, 88, 40, ST77XX_CYAN);
-  tft.setCursor(27, 90);
-  tft.setTextSize(3);
-  tft.setTextColor(ST77XX_BLACK);
-  tft.print(calculateVin(analogRead(PIN_Volt)));
+ setFloatValueInCadre(CADRE_A0_X,CADRE_A0_Y,CADRE_GENERIC_W,CADRE_GENERIC_H, calculateVin(analogRead(PIN_Volt)), CADRE_GENERIC_VALUE_PRECISION);
+ setFloatValueInCadre(CADRE_A1_X,CADRE_A1_Y,CADRE_GENERIC_W,CADRE_GENERIC_H, calculateVin(analogRead(A1)), CADRE_GENERIC_VALUE_PRECISION);
   delay(900);
 }
